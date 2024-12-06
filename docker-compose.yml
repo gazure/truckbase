@@ -1,15 +1,6 @@
 services:
-  postgres:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: stocks
-      POSTGRES_USER: stocks
-      POSTGRES_PASSWORD: stocks123
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
 
+  # Back-end
   stocksapi:
     build:
       context: ./stocksapi
@@ -30,6 +21,7 @@ services:
       PORT: 8000
       DATABASE_URL: postgresql://stocks:stocks123@postgres:5432/stocks
 
+  # Front-end
   stocksapp:
     build:
       context: ./stocksapp
@@ -49,6 +41,19 @@ services:
         - path: package.json
           action: rebuild
 
+
+  # DB infra
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: stocks
+      POSTGRES_USER: stocks
+      POSTGRES_PASSWORD: stocks123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   db-migrate:
     build:
       context: ./db-migrate
@@ -57,6 +62,7 @@ services:
     environment:
       DATABASE_URL: postgresql://stocks:stocks123@postgres:5432/stocks
 
+  # DB admin panel
   adminer:
     image: adminer
     ports:
