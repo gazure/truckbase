@@ -1,0 +1,68 @@
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: stocks
+      POSTGRES_USER: stocks
+      POSTGRES_PASSWORD: stocks123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  stocksapi:
+    build:
+      context: ./stocksapi
+    develop:
+      watch:
+        - path: ./stocksapi/src
+          target: /app/src
+          ignore:
+            - ./node_modules
+          action: sync+restart
+        - path: package.json
+          action: rebuild
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    environment:
+      PORT: 8000
+      DATABASE_URL: postgresql://stocks:stocks123@postgres:5432/stocks
+
+  stocksapp:
+    build:
+      context: ./stocksapp
+    ports:
+      - "3000:3000"
+    depends_on:
+      - stocksapi
+    environment:
+      API_URL: http://stocksapi:8000
+    develop:
+      watch:
+        - path: ./stocksapp/src
+          target: /app/src
+          ignore:
+            - ./node_modules
+          action: sync+restart
+        - path: package.json
+          action: rebuild
+
+  db-migrate:
+    build:
+      context: ./db-migrate
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://stocks:stocks123@postgres:5432/stocks
+
+  adminer:
+    image: adminer
+    ports:
+      - "9080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:

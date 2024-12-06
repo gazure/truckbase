@@ -1,0 +1,22 @@
+{
+  "name": "stocksapi",
+  "version": "1.0.0",
+  "description": "stocksapi",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@sequelize/postgres": "^7.0.0-alpha.43",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "sequelize": "^6.37.5"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
+  }
+}
